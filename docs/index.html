@@ -10,10 +10,11 @@
     --text:#fff; --accent1:#7c3aed; --accent2:#ec4899; --green:#22c55e;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-       display:flex;justify-content:center;align-items:center;min-height:100vh}
-  .app{display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:center}
-  .phone{position:relative;width:393px;height:852px;border-radius:55px;overflow:hidden;
+  html, body{margin:0;padding:0;height:100%;overflow:hidden}
+  body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+       display:flex;justify-content:center;align-items:center}
+  .app{display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:center;height:100vh;padding:20px}
+  .phone{position:relative;width:393px;height:min(852px, calc(100vh - 40px));border-radius:55px;overflow:hidden;
          background:linear-gradient(145deg, #1d1d1f, #0a0a0b);
          box-shadow:0 0 0 1px #2c2c2e, 
                     0 0 0 3px #1d1d1f, 
@@ -149,8 +150,6 @@
     border-radius: 1px;
     transition: all 0.3s ease;
   }
-    transition: all 0.3s ease;
-  }
   
   .bluetooth-icon {
     font-size: 11px;
@@ -250,7 +249,7 @@
   .video{position:absolute;inset:4px;object-fit:cover;width:calc(100% - 8px);height:calc(100% - 8px);
          transition:opacity 0.6s ease;border-radius:51px;overflow:hidden}
   .video video{width:100%;height:100%;object-fit:cover}
-  .header{position:absolute;top:65px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:500;font-size:12px;align-items:center}
+  .header{position:absolute;top:min(65px, 8%);left:14px;right:14px;display:flex;justify-content:space-between;z-index:500;font-size:12px;align-items:center}
   .brand{display:flex;gap:8px;align-items:center}
   .brand .tag{padding:4px 8px;border:1px solid var(--muted);border-radius:999px;background:rgba(255,255,255,.06);font-weight:700}
   .btn{padding:6px 10px;border-radius:12px;border:1px solid var(--muted);background:rgba(255,255,255,.08);cursor:pointer;z-index:500;position:relative;
@@ -258,14 +257,14 @@
   .btn:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);transform:translateY(-1px);
              box-shadow:0 4px 12px rgba(0,0,0,.2)}
   .btn:active{transform:scale(.98) translateY(0);box-shadow:0 2px 6px rgba(0,0,0,.15)}
-  .actions{position:absolute;right:14px;bottom:140px;display:flex;flex-direction:column;gap:10px;z-index:50}
+  .actions{position:absolute;right:14px;bottom:min(140px, 20%);display:flex;flex-direction:column;gap:10px;z-index:50}
   .circle-btn{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid var(--muted);
               display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:all .2s ease;user-select:none}
   .circle-btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.25);transform:translateY(-2px) scale(1.05);
                     box-shadow:0 6px 20px rgba(0,0,0,.25)}
   .circle-btn:active{transform:scale(.96) translateY(0);box-shadow:0 2px 8px rgba(0,0,0,.2)}
 
-  .navbar{position:absolute;bottom:20px;left:14px;right:14px;display:flex;justify-content:center;z-index:500}
+  .navbar{position:absolute;bottom:min(20px, 3%);left:14px;right:14px;display:flex;justify-content:center;z-index:500}
   .navbar .btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
                backdrop-filter:blur(20px);box-shadow:0 4px 20px rgba(0,0,0,.3);
                transition:all 0.2s ease}
@@ -275,7 +274,7 @@
   .navbar .btn.success:hover{background:rgba(34,197,94,.25);border-color:rgba(34,197,94,.5);
                              transform:translateY(-2px);box-shadow:0 8px 25px rgba(34,197,94,.3)}
 
-  .side{display:flex;flex-direction:column;gap:16px}
+  .side{display:flex;flex-direction:column;gap:16px;position:relative}
   .next-btn{width:210px;height:56px;border-radius:16px;
             background:linear-gradient(135deg, #fde047, #facc15, #eab308);
             border:1px solid rgba(250, 204, 21, 0.3);
@@ -877,6 +876,43 @@
       transform: translateY(-15px) rotate(270deg);
     }
   }
+
+  /* Responsive design for different screen sizes */
+  @media (max-height: 900px) {
+    .phone {
+      height: calc(100vh - 40px);
+      max-height: 800px;
+    }
+  }
+
+  @media (max-height: 800px) {
+    .app {
+      padding: 10px;
+    }
+    .phone {
+      height: calc(100vh - 20px);
+      max-height: 750px;
+    }
+  }
+
+  @media (max-height: 700px) {
+    .phone {
+      height: calc(100vh - 20px);
+      max-height: 650px;
+      width: min(393px, calc(100vw - 40px));
+    }
+  }
+
+  @media (max-width: 450px) {
+    .app {
+      padding: 5px;
+    }
+    .phone {
+      width: calc(100vw - 10px);
+      height: calc(100vh - 10px);
+      max-width: 393px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -969,6 +1005,7 @@
       </div>
       <div class="icon">▶️</div>
     </button>
+    
     <div class="panel">
       <strong class="panel-header" id="panelHeader">Шаги онбординга</strong>
       <div class="rules" id="rules"></div>
@@ -981,6 +1018,67 @@
 </div>
 
 <script>
+  // Environment variables
+  const ENV = {
+    SESSION_KEY: 'iphone_unlocked'
+  };
+  
+  // Reset functionality
+  let resetClickCount = 0;
+  let resetClickTimer = null;
+  
+  function checkUnlockStatus() {
+    // Простая инициализация без блокировки
+    initializeOnboarding();
+  }
+  
+  function initializeOnboarding() {
+    // Инициализация основного функционала
+    updateTime();
+    updateBattery();
+    updateStats();
+    updateRules();
+  }
+  
+  function updateTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('ru-RU', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    });
+    
+    document.getElementById('currentTime').textContent = timeString;
+  }
+  
+  function updateBattery() {
+    // Симулируем изменение заряда батареи
+    currentBattery = Math.max(20, Math.min(100, currentBattery + (Math.random() - 0.7) * 2));
+    document.getElementById('batteryPercent').textContent = Math.round(currentBattery) + '%';
+    
+    const batteryFill = document.getElementById('batteryFill');
+    batteryFill.style.width = currentBattery + '%';
+    
+    // Меняем цвет в зависимости от заряда
+    if (currentBattery <= 20) {
+      batteryFill.style.backgroundColor = '#ff453a';
+    } else if (currentBattery <= 50) {
+      batteryFill.style.backgroundColor = '#ff9500';
+    } else {
+      batteryFill.style.backgroundColor = '#34c759';
+    }
+  }
+  
+  // Основная инициализация
+  document.addEventListener('DOMContentLoaded', () => {
+    // Проверяем статус разблокировки
+    checkUnlockStatus();
+    
+    // Обновляем время каждую секунду
+    setInterval(updateTime, 1000);
+    setInterval(updateBattery, 30000); // Обновляем батарею каждые 30 секунд
+  });
+  
   let isAuth=false, profile=false, viewed=0, likes=0, comments=0, follows=0;
   const totalSteps=6, viewGoal=5;
 
@@ -988,36 +1086,20 @@
   let currentBattery = 87;
   let dndMode = Math.random() > 0.5; // Рандомный режим "Не беспокоить"
   
-  function updateStatusBar() {
-    // Update time
-    const now = new Date();
-    const timeString = now.toLocaleTimeString('ru-RU', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: false 
-    });
-    document.getElementById('currentTime').textContent = timeString;
+  function randomizeData() {
+    // Random battery (60-95%)
+    currentBattery = Math.floor(Math.random() * 36) + 60;
+    
+    // Random DND mode
+    dndMode = Math.random() > 0.7; // 30% chance
+    
+    updateBattery();
+    updateTime();
     
     // Update Do Not Disturb mode
     const dndIcon = document.getElementById('dndIcon');
     if (dndIcon) {
       dndIcon.style.display = dndMode ? 'inline' : 'none';
-    }
-    
-    // Update battery
-    document.getElementById('batteryPercent').textContent = currentBattery + '%';
-    const batteryFill = document.getElementById('batteryFill');
-    if (batteryFill) {
-      batteryFill.style.width = (currentBattery * 0.18) + 'px'; // 18px max width
-      
-      // Color based on battery level
-      if (currentBattery > 50) {
-        batteryFill.style.background = '#34d058';
-      } else if (currentBattery > 20) {
-        batteryFill.style.background = '#ffab00';
-      } else {
-        batteryFill.style.background = '#f85149';
-      }
     }
     
     // Update signal bars
@@ -1032,19 +1114,8 @@
     });
   }
   
-  function randomizeData() {
-    // Random battery (60-95%)
-    currentBattery = Math.floor(Math.random() * 36) + 60;
-    
-    // Random DND mode
-    dndMode = Math.random() > 0.7; // 30% chance
-    
-    updateStatusBar();
-  }
-  
-  // Initialize and update every minute
+  // Initialize and update
   randomizeData();
-  setInterval(updateStatusBar, 60000); // Update time every minute
   setInterval(randomizeData, 30000); // Randomize data every 30 seconds
 
   // Супер крутые анимации с эмодзи (мгновенная загрузка)
@@ -1256,6 +1327,38 @@
   document.getElementById('followBtn').onclick = ()=>doAction('follow');
 
   document.getElementById('resetBtn').onclick=()=>{
+    // Проверяем разблокирован ли телефон
+    const isUnlocked = sessionStorage.getItem(ENV.SESSION_KEY) === 'true';
+    
+    if (isUnlocked) {
+      // Если разблокирован - считаем клики для блокировки
+      resetClickCount++;
+      
+      // Сбрасываем таймер
+      if (resetClickTimer) {
+        clearTimeout(resetClickTimer);
+      }
+      
+      // Устанавливаем новый таймер на 3 секунды
+      resetClickTimer = setTimeout(() => {
+        resetClickCount = 0;
+      }, 3000);
+      
+      // Если 5 кликов - блокируем телефон
+      if (resetClickCount >= 5) {
+        sessionStorage.removeItem(ENV.SESSION_KEY);
+        lockPhone();
+        resetClickCount = 0;
+        showToast('🔒 Телефон заблокирован', 'Нажато 5 раз подряд');
+        return;
+      }
+      
+      // Показываем количество кликов
+      const remaining = 5 - resetClickCount;
+      showToast(`🔄 Сброс (${resetClickCount}/5)`, `Ещё ${remaining} для блокировки`);
+    }
+    
+    // Обычный сброс
     isAuth=false; profile=false; viewed=0; likes=0; comments=0; follows=0;
     nextBtn.querySelector('small').textContent='(0)';
     
@@ -1268,8 +1371,23 @@
     // Рандомизируем данные статус-бара при сбросе
     randomizeData();
     
+    // Если телефон был заблокирован - остаётся заблокированным
+    if (!isUnlocked) {
+      sessionStorage.removeItem(ENV.SESSION_KEY);
+      lockPhone();
+    }
+    
     changeBg(); updateRules(); updateStats(); updateProgress();
-    const c=nextCopy(); showToast(c.t,c.h);
+    
+    // Показываем toast только если это не блокировка
+    if (resetClickCount < 5) {
+      const c=nextCopy(); 
+      if (isUnlocked) {
+        // Не показываем обычный toast при подсчёте кликов
+      } else {
+        showToast(c.t, c.h);
+      }
+    }
   };
 
   // Easter Egg - Telegram notification (теперь вызывается через заголовок)
