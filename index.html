@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Вабсики Onboarding — Fast GIF Story</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root{
+    --bg:#0f1113; --card:#000; --border:#2b2f36; --muted:rgba(255,255,255,.2);
+    --text:#fff; --accent1:#7c3aed; --accent2:#ec4899; --green:#22c55e;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+       display:flex;justify-content:center;align-items:center;min-height:100vh}
+  .app{display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:center}
+  .phone{position:relative;width:380px;height:680px;border-radius:28px;overflow:hidden;border:1px solid var(--border);background:var(--card)}
+  .video{position:absolute;inset:0;background-size:cover;background-position:center;transition:background-image 0.6s ease}
+  .header{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;z-index:3;font-size:12px;align-items:center}
+  .brand{display:flex;gap:8px;align-items:center}
+  .brand .tag{padding:4px 8px;border:1px solid var(--muted);border-radius:999px;background:rgba(255,255,255,.06);font-weight:700}
+  .btn{padding:6px 10px;border-radius:12px;border:1px solid var(--muted);background:rgba(255,255,255,.08);cursor:pointer;transition:all 0.1s ease}
+  .btn:hover{background:rgba(255,255,255,.12)}
+  .btn:active{transform:scale(.98)}
+  .actions{position:absolute;right:10px;bottom:120px;display:flex;flex-direction:column;gap:10px;z-index:2}
+  .circle-btn{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid var(--muted);
+              display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:all .1s ease}
+  .circle-btn:hover{background:rgba(255,255,255,.12)}
+  .circle-btn:active{transform:scale(.96)}
+
+  .side{display:flex;flex-direction:column;gap:16px}
+  .next-btn{width:68px;height:180px;border-radius:34px;
+            background:linear-gradient(160deg,var(--accent1),var(--accent2));
+            border:1px solid transparent;box-shadow:0 0 24px rgba(236,72,153,.35);
+            cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px;font-weight:700;color:#fff;
+            transition:transform 0.1s ease}
+  .next-btn:hover{transform:scale(1.02)}
+  .next-btn:active{transform:scale(.98)}
+  .next-btn small{display:block;opacity:.9;font-weight:600}
+  .panel{padding:12px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid var(--muted);font-size:12px;min-width:210px}
+  .rules{margin-top:8px;line-height:1.55}
+  .rules .done{color:#a7f3d0}
+
+  .toast{position:absolute;top:62px;left:50%;transform:translateX(-50%) translateY(-20px);padding:12px 16px;border-radius:16px;
+         min-width:260px;max-width:340px;background:rgba(5,6,8,.92);border:1px solid rgba(255,255,255,.12);
+         text-align:left;z-index:4;opacity:0;visibility:hidden;
+         transition:all .4s cubic-bezier(.25,.46,.45,.94)}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
+  .toast .title{font-weight:800;margin-bottom:4px}
+  .toast .hint{opacity:.9;font-size:13px}
+  .progress-wrap{margin-top:8px}
+  .progress-top{display:flex;justify-content:space-between;font-size:12px;opacity:.85}
+  .progress-bar{margin-top:4px;height:8px;background:rgba(255,255,255,.18);border-radius:999px;overflow:hidden}
+  .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#34d399,#22c55e);transition:width .35s ease}
+
+  .confetti{position:absolute;width:8px;height:8px;background:var(--c);top:0;left:0;opacity:.9;pointer-events:none}
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .app{flex-direction:column;gap:16px;padding:16px}
+    .phone{width:320px;height:570px}
+    .side{width:100%;max-width:320px}
+    .next-btn{width:100%;height:60px;flex-direction:row;gap:8px}
+    .panel{width:100%}
+    .toast{min-width:240px;left:10px;right:10px;transform:translateY(-20px)}
+    .toast.show{left:10px;right:10px;transform:translateY(0)}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="phone">
+    <div class="video" id="video"></div>
+
+    <div class="header">
+      <div class="brand">
+        <div>🔥 Вабсики</div>
+        <div class="tag" id="levelTag">Lv.0 Новичок</div>
+      </div>
+      <button class="btn" id="authBtn">🔓 Войти</button>
+    </div>
+
+    <div class="actions">
+      <div class="circle-btn" id="profileBtn" title="Заполнить профиль">👤</div>
+      <div class="circle-btn" id="likeBtn" title="Лайк">❤️</div>
+      <div class="circle-btn" id="commentBtn" title="Коммент">💬</div>
+      <div class="circle-btn" id="followBtn" title="Подписка">➕</div>
+    </div>
+
+    <div class="toast" id="toast">
+      <div class="title" id="toastTitle"></div>
+      <div class="hint" id="toastHint"></div>
+      <div class="progress-wrap">
+        <div class="progress-top">
+          <div>Прогресс</div>
+          <div id="progressCount">0/6</div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="side">
+    <button class="next-btn" id="nextVideo">▶️<br/>След.<br/>видео<br/><small>(0)</small></button>
+    <div class="panel">
+      <strong>Шаги онбординга</strong>
+      <div class="rules" id="rules"></div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,.2);margin:8px 0;">
+      <div id="stats"></div>
+      <button class="btn" id="resetBtn" style="margin-top:8px;">Сбросить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let isAuth=false, profile=false, viewed=0, likes=0, comments=0, follows=0;
+  const totalSteps=6, viewGoal=5;
+
+  // Лёгкие GIF (320px)
+  const videoBg=[
+    "https://media.tenor.com/7vJ5qXb9jHIAAAAC/ocean-waves.gif",
+    "https://media.tenor.com/mGgWY8RkgYMAAAAC/hello-world.gif",
+    "https://media.tenor.com/2roX3uxz_68AAAAC/cat-computer.gif",
+    "https://media.tenor.com/9P5x9oUDJ7sAAAAC/space-stars.gif",
+    "https://media.tenor.com/0ZJQGLjeflAAAAAC/mountains-landscape.gif"
+  ];
+
+  let lastToastAt=0;
+  const levelTag=document.getElementById('levelTag');
+  const nextBtn=document.getElementById('nextVideo');
+
+  const copy = {
+    start:        {t:"🚀 Ты в Вабсики!",               h:"Начни смотреть — лента будет под тебя"},
+    viewsNeedAuth:{t:"👀 Классный ритм!",            h:"Войди, чтобы лента запомнила твой вкус"},
+    authed:       {t:"✅ Теперь мы знакомы",         h:"Заполни профиль — станешь заметнее в сообществе"},
+    profiled:     {t:"✏️ Отлично!",                  h:"Смотри дальше — лента будет всё точнее"},
+    viewsDone:    {t:"🎯 Хороший темп!",             h:"Поставь лайк — лента поймёт твой вкус"},
+    like:         {t:"❤️ Лента уже учится",          h:"Оставь комментарий — добавь эмоций"},
+    comment:      {t:"💬 Ты в диалоге",              h:"Подпишись — увидишь больше любимого"},
+    final:        {t:"🎉 Лента полностью твоя",      h:"Продолжай смотреть и лайкать — она станет ещё умнее"},
+    needAuth:     {t:"🔓 Авторизуйся",               h:"Чтобы выполнить этот шаг"},
+  };
+
+  const stepsList=[
+    {key:"view",label:"👀 Посмотри 5 видео"},
+    {key:"auth",label:"🔓 Авторизуйся"},
+    {key:"profile",label:"👤 Заполни профиль"},
+    {key:"like",label:"❤️ Поставь лайк"},
+    {key:"comment",label:"💬 Оставь комментарий"},
+    {key:"follow",label:"➕ Подпишись"},
+  ];
+
+  function stepsDone(){
+    let d=0;
+    if(viewed>=viewGoal)d++;
+    if(isAuth)d++;
+    if(profile)d++;
+    if(likes>=1)d++;
+    if(comments>=1)d++;
+    if(follows>=1)d++;
+    return d;
+  }
+  function levelLabel(){
+    const map=["Lv.0 Новичок","Lv.1 Зритель","Lv.2 Вовлечён","Lv.3 Соавтор","Lv.4 В круге","Lv.5 На волне","Lv.6 Свой человек"];
+    return map[stepsDone()]||map[0];
+  }
+  function updateProgress(){
+    const done=stepsDone();
+    document.getElementById('progressCount').textContent=`${done}/${totalSteps}`;
+    document.getElementById('progressFill').style.width=(done/totalSteps*100)+"%";
+    levelTag.textContent=levelLabel();
+  }
+  function updateRules(){
+    document.getElementById('rules').innerHTML = stepsList.map(s=>{
+      let done=false;
+      if(s.key==="view" && viewed>=viewGoal)done=true;
+      if(s.key==="auth" && isAuth)done=true;
+      if(s.key==="profile" && profile)done=true;
+      if(s.key==="like" && likes>=1)done=true;
+      if(s.key==="comment" && comments>=1)done=true;
+      if(s.key==="follow" && follows>=1)done=true;
+      return `<span class="${done?'done':''}">${done?'✅':'•'} ${s.label}</span>`;
+    }).join("<br>");
+  }
+  function updateStats(){
+    document.getElementById('stats').innerHTML=
+      `Просмотры: ${viewed}<br>Auth: ${isAuth}<br>Профиль: ${profile}<br>Лайки: ${likes}<br>Комменты: ${comments}<br>Подписки: ${follows}`;
+  }
+  function changeBg(){ document.getElementById('video').style.backgroundImage = `url(${videoBg[viewed % videoBg.length]})`; }
+
+  function showToast(title, hint){
+    const now=Date.now();
+    if(now - lastToastAt < 250) return;
+    lastToastAt=now;
+    const el=document.getElementById('toast');
+    document.getElementById('toastTitle').textContent=title;
+    document.getElementById('toastHint').textContent=hint;
+    updateProgress();
+    el.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t=setTimeout(()=>el.classList.remove('show'), 3000);
+  }
+
+  function confetti(){
+    const phone=document.querySelector('.phone');
+    for(let i=0;i<24;i++){
+      const c=document.createElement('div');
+      c.className='confetti';
+      c.style.setProperty('--c',`hsl(${Math.random()*360},100%,60%)`);
+      c.style.left=Math.random()*380+'px'; c.style.top='0px';
+      phone.appendChild(c);
+      let y=0,rot=0; const fall=setInterval(()=>{
+        y+=4; rot+=5; c.style.transform=`translateY(${y}px) rotate(${rot}deg)`;
+        if(y>700){clearInterval(fall); c.remove();}
+      },16);
+    }
+  }
+
+  function nextCopy(){
+    if(!isAuth && viewed<viewGoal) return copy.start;
+    if(!isAuth && viewed>=viewGoal) return copy.viewsNeedAuth;
+    if(isAuth && !profile) return copy.authed;
+    if(isAuth && profile && viewed<viewGoal) return copy.profiled;
+    if(isAuth && viewed>=viewGoal && likes<1) return copy.viewsDone;
+    if(likes>=1 && comments<1) return copy.like;
+    if(comments>=1 && follows<1) return copy.comment;
+    if(follows>=1) return copy.final;
+    return copy.start;
+  }
+
+  function doAction(type){
+    if(type!=="view" && type!=="auth" && !isAuth){ showToast(copy.needAuth.t, copy.needAuth.h); return; }
+
+    if(type==="view"){ viewed++; nextBtn.querySelector('small').textContent=`(${viewed})`; }
+    if(type==="auth"){ isAuth=true; }
+    if(type==="profile"){ profile=true; }
+    if(type==="like"){ likes++; }
+    if(type==="comment"){ comments++; }
+    if(type==="follow"){ follows++; }
+
+    changeBg(); updateRules(); updateStats();
+
+    const c = nextCopy();
+    showToast(c.t, c.h);
+
+    if(stepsDone()===totalSteps){ confetti(); }
+  }
+
+  document.getElementById('nextVideo').onclick = ()=>doAction('view');
+  document.getElementById('authBtn').onclick   = ()=>doAction('auth');
+  document.getElementById('profileBtn').onclick= ()=>doAction('profile');
+  document.getElementById('likeBtn').onclick   = ()=>doAction('like');
+  document.getElementById('commentBtn').onclick= ()=>doAction('comment');
+  document.getElementById('followBtn').onclick = ()=>doAction('follow');
+
+  document.getElementById('resetBtn').onclick=()=>{
+    isAuth=false; profile=false; viewed=0; likes=0; comments=0; follows=0;
+    nextBtn.querySelector('small').textContent='(0)';
+    changeBg(); updateRules(); updateStats(); updateProgress();
+    const c=nextCopy(); showToast(c.t,c.h);
+  };
+
+  changeBg(); updateRules(); updateStats(); updateProgress();
+  const c0=nextCopy(); showToast(c0.t,c0.h);
+</script>
+
+</body>
+</html>
