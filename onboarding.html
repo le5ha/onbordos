@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<title>Wibes Onboarding — Fast GIF Story</title>
+<title>Вабсики Onboarding — Fast GIF Story</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   :root{
@@ -18,27 +18,33 @@
   .header{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;z-index:3;font-size:12px;align-items:center}
   .brand{display:flex;gap:8px;align-items:center}
   .brand .tag{padding:4px 8px;border:1px solid var(--muted);border-radius:999px;background:rgba(255,255,255,.06);font-weight:700}
-  .btn{padding:6px 10px;border-radius:12px;border:1px solid var(--muted);background:rgba(255,255,255,.08);cursor:pointer}
+  .btn{padding:6px 10px;border-radius:12px;border:1px solid var(--muted);background:rgba(255,255,255,.08);cursor:pointer;transition:all 0.1s ease}
+  .btn:hover{background:rgba(255,255,255,.12)}
   .btn:active{transform:scale(.98)}
   .actions{position:absolute;right:10px;bottom:120px;display:flex;flex-direction:column;gap:10px;z-index:2}
   .circle-btn{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid var(--muted);
-              display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:transform .1s ease}
+              display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:all .1s ease}
+  .circle-btn:hover{background:rgba(255,255,255,.12)}
   .circle-btn:active{transform:scale(.96)}
 
   .side{display:flex;flex-direction:column;gap:16px}
   .next-btn{width:68px;height:180px;border-radius:34px;
             background:linear-gradient(160deg,var(--accent1),var(--accent2));
             border:1px solid transparent;box-shadow:0 0 24px rgba(236,72,153,.35);
-            cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px;font-weight:700;color:#fff}
+            cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px;font-weight:700;color:#fff;
+            transition:transform 0.1s ease}
+  .next-btn:hover{transform:scale(1.02)}
+  .next-btn:active{transform:scale(.98)}
   .next-btn small{display:block;opacity:.9;font-weight:600}
   .panel{padding:12px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid var(--muted);font-size:12px;min-width:210px}
   .rules{margin-top:8px;line-height:1.55}
   .rules .done{color:#a7f3d0}
 
-  .toast{position:absolute;top:-80px;left:50%;transform:translateX(-50%);padding:12px 16px;border-radius:16px;
+  .toast{position:absolute;top:62px;left:50%;transform:translateX(-50%) translateY(-20px);padding:12px 16px;border-radius:16px;
          min-width:260px;max-width:340px;background:rgba(5,6,8,.92);border:1px solid rgba(255,255,255,.12);
-         text-align:left;z-index:4;opacity:0;transition:all .35s cubic-bezier(.2,.8,.2,1)}
-  .toast.show{top:62px;opacity:1}
+         text-align:left;z-index:4;opacity:0;visibility:hidden;
+         transition:all .4s cubic-bezier(.25,.46,.45,.94)}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
   .toast .title{font-weight:800;margin-bottom:4px}
   .toast .hint{opacity:.9;font-size:13px}
   .progress-wrap{margin-top:8px}
@@ -46,7 +52,18 @@
   .progress-bar{margin-top:4px;height:8px;background:rgba(255,255,255,.18);border-radius:999px;overflow:hidden}
   .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#34d399,#22c55e);transition:width .35s ease}
 
-  .confetti{position:absolute;width:8px;height:8px;background:var(--c);top:0;left:0;opacity:.9}
+  .confetti{position:absolute;width:8px;height:8px;background:var(--c);top:0;left:0;opacity:.9;pointer-events:none}
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .app{flex-direction:column;gap:16px;padding:16px}
+    .phone{width:320px;height:570px}
+    .side{width:100%;max-width:320px}
+    .next-btn{width:100%;height:60px;flex-direction:row;gap:8px}
+    .panel{width:100%}
+    .toast{min-width:240px;left:10px;right:10px;transform:translateY(-20px)}
+    .toast.show{left:10px;right:10px;transform:translateY(0)}
+  }
 </style>
 </head>
 <body>
@@ -57,7 +74,7 @@
 
     <div class="header">
       <div class="brand">
-        <div>🔥 Wibes</div>
+        <div>🔥 Вабсики</div>
         <div class="tag" id="levelTag">Lv.0 Новичок</div>
       </div>
       <button class="btn" id="authBtn">🔓 Войти</button>
@@ -113,7 +130,7 @@
   const nextBtn=document.getElementById('nextVideo');
 
   const copy = {
-    start:        {t:"🚀 Ты в Wibes!",               h:"Начни смотреть — лента будет под тебя"},
+    start:        {t:"🚀 Ты в Вабсики!",               h:"Начни смотреть — лента будет под тебя"},
     viewsNeedAuth:{t:"👀 Классный ритм!",            h:"Войди, чтобы лента запомнила твой вкус"},
     authed:       {t:"✅ Теперь мы знакомы",         h:"Заполни профиль — станешь заметнее в сообществе"},
     profiled:     {t:"✏️ Отлично!",                  h:"Смотри дальше — лента будет всё точнее"},
