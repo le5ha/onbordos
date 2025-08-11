@@ -1249,7 +1249,7 @@
     
     el.classList.add('show');
     clearTimeout(showToast._t);
-    showToast._t=setTimeout(()=>el.classList.remove('show'), 3000);
+    showToast._t=setTimeout(()=>el.classList.remove('show'), 5000);
   }
 
   function confetti(){
@@ -1277,10 +1277,10 @@
       navigator.vibrate([200, 100, 200]);
     }
     
-    // Убираем уведомление через 4 секунды
+    // Убираем уведомление через 6 секунд
     setTimeout(() => {
       notification.classList.remove('show');
-    }, 4000);
+    }, 6000);
     
     console.log('📱 Telegram уведомление от Босса показано!');
   }
@@ -1329,39 +1329,24 @@
   document.getElementById('followBtn').onclick = ()=>doAction('follow');
 
   document.getElementById('resetBtn').onclick=()=>{
-    // Проверяем разблокирован ли телефон
-    const isUnlocked = sessionStorage.getItem(ENV.SESSION_KEY) === 'true';
+    // Полный сброс до начального состояния
     
-    if (isUnlocked) {
-      // Если разблокирован - считаем клики для блокировки
-      resetClickCount++;
-      
-      // Сбрасываем таймер
-      if (resetClickTimer) {
-        clearTimeout(resetClickTimer);
-      }
-      
-      // Устанавливаем новый таймер на 3 секунды
-      resetClickTimer = setTimeout(() => {
-        resetClickCount = 0;
-      }, 3000);
-      
-      // Если 5 кликов - блокируем телефон
-      if (resetClickCount >= 5) {
-        sessionStorage.removeItem(ENV.SESSION_KEY);
-        lockPhone();
-        resetClickCount = 0;
-        showToast('🔒 Телефон заблокирован', 'Нажато 5 раз подряд');
-        return;
-      }
-      
-      // Показываем количество кликов
-      const remaining = 5 - resetClickCount;
-      showToast(`🔄 Сброс (${resetClickCount}/5)`, `Ещё ${remaining} для блокировки`);
+    // Сбрасываем все игровые переменные
+    isAuth = false; 
+    profile = false; 
+    viewed = 0; 
+    likes = 0; 
+    comments = 0; 
+    follows = 0;
+    resetClickCount = 0;
+    
+    // Очищаем все таймеры
+    if (resetClickTimer) {
+      clearTimeout(resetClickTimer);
+      resetClickTimer = null;
     }
     
-    // Обычный сброс
-    isAuth=false; profile=false; viewed=0; likes=0; comments=0; follows=0;
+    // Сбрасываем кнопку "Следующее видео"
     nextBtn.querySelector('small').textContent='(0)';
     
     // Сбрасываем состояние кнопки входа
@@ -1370,26 +1355,29 @@
     authBtn.classList.remove('success');
     authBtn.disabled = false;
     
-    // Рандомизируем данные статус-бара при сбросе
+    // Сбрасываем все кнопки действий
+    document.getElementById('profileBtn').classList.remove('success');
+    document.getElementById('likeBtn').classList.remove('success');
+    document.getElementById('commentBtn').classList.remove('success');
+    document.getElementById('followBtn').classList.remove('success');
+    
+    // Рандомизируем данные статус-бара
     randomizeData();
     
-    // Если телефон был заблокирован - остаётся заблокированным
-    if (!isUnlocked) {
-      sessionStorage.removeItem(ENV.SESSION_KEY);
-      lockPhone();
-    }
+    // Обновляем интерфейс
+    changeBg(); 
+    updateRules(); 
+    updateStats(); 
+    updateProgress();
     
-    changeBg(); updateRules(); updateStats(); updateProgress();
-    
-    // Показываем toast только если это не блокировка
-    if (resetClickCount < 5) {
-      const c=nextCopy(); 
-      if (isUnlocked) {
-        // Не показываем обычный toast при подсчёте кликов
-      } else {
-        showToast(c.t, c.h);
-      }
-    }
+    // Показываем приветственное сообщение
+    const welcomeMessages = [
+      { t: "🔄 Сброшено!", h: "Начинаем заново с чистого листа" },
+      { t: "✨ Перезапуск", h: "Добро пожаловать в Ваебс!" },
+      { t: "🚀 Новый старт", h: "Готов к онбордингу?" }
+    ];
+    const randomMsg = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+    showToast(randomMsg.t, randomMsg.h);
   };
 
   // Easter Egg - Telegram notification (теперь вызывается через заголовок)
