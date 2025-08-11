@@ -1286,7 +1286,8 @@
   }
 
   function nextCopy(){
-    if(!isAuth && viewed<viewGoal) return copy.start;
+    if(!isAuth && viewed===1) return copy.start; // Только для первого просмотра
+    if(!isAuth && viewed>1 && viewed<viewGoal) return {t:"👀 Продолжай смотреть", h:`Ещё ${viewGoal-viewed} видео до цели`}; // Промежуточные просмотры
     if(!isAuth && viewed>=viewGoal) return copy.viewsNeedAuth;
     if(isAuth && !profile) return copy.authed;
     if(isAuth && profile && viewed<viewGoal) return copy.profiled;
